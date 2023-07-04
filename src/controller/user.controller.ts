@@ -4,24 +4,24 @@ import { IUserService } from "../service/user.service.ts";
 export class UserController {
   constructor(private userService: IUserService) {}
 
-  createUser(req: Request, res: Response, next: NextFunction) {
+  createUser = async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body;
 
     try {
-      const result = this.userService.createUser(payload);
+      const result = await this.userService.createUser(payload);
       res.status(201).send(result);
     } catch (error) {
       next(error);
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 
-  getUser(req: Request, res: Response, next: NextFunction) {
+  getUser = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
     try {
-      const result = this.userService.getUser(id);
+      const result = await this.userService.getUser(id);
       if (result) {
         res.status(201).send(result);
       } else {
@@ -32,24 +32,25 @@ export class UserController {
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 
-  getUsers(req: Request, res: Response, next: NextFunction) {
+  getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = this.userService.getUser();
+      const result = await this.userService.getUser();
       res.status(201).send(result);
     } catch (error) {
       next(error);
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 
-  async updateUser(req: Request, res: Response, next: NextFunction) {
+  updateUser = async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body;
+    const id = req.params.id;
 
     try {
-      const result = await this.userService.updateUser(payload);
+      const result = await this.userService.updateUser({ ...payload, id });
       if (result) {
         res.status(201).send(result);
       } else {
@@ -60,9 +61,9 @@ export class UserController {
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
+  deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
     try {
@@ -77,13 +78,13 @@ export class UserController {
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 
-  async activateUser(req: Request, res: Response, next: NextFunction) {
+  activateUser = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
     try {
-      const result = await this.userService.deleteUser(id);
+      const result = await this.userService.activateUser(id);
       if (result) {
         res.status(201).send(result);
       } else {
@@ -94,5 +95,5 @@ export class UserController {
       console.log(error);
       res.status(500).send("internal sever error");
     }
-  }
+  };
 }

@@ -2,12 +2,12 @@ export default class User {
   modificationTimestamp: null | Date;
   creationTimestamp: Date;
   status: boolean;
-  id: String;
-  name: String;
-  age: Number;
-  gender: String;
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
 
-  constructor(id: String, name: String, age: Number, gender: String) {
+  constructor(id: string, name: string, age: number, gender: string) {
     this.id = id;
     this.name = name;
     this.age = age;
@@ -17,15 +17,15 @@ export default class User {
     this.modificationTimestamp = null;
   }
 
-  activate() {
-    this.status = true;
-    this.modificationTimestamp = new Date();
-  }
+  // activate() {
+  //   this.status = true;
+  //   this.modificationTimestamp = new Date();
+  // }
 
-  update(name: string, age: number, gender: string) {
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
-    this.modificationTimestamp = new Date();
-  }
+  // update(name: string, age: number, gender: string) {
+  //   this.name = name;
+  //   this.age = age;
+  //   this.gender = gender;
+  //   this.modificationTimestamp = new Date();
+  // }
 }

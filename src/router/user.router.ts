@@ -7,8 +7,8 @@ import userValidationMiddleware from "../middlewares/userValidation.middleware.t
 
 const router = express.Router();
 
+router.get("/:id", idValidationMiddleware, userController.getUser);
 router.get("/", userController.getUsers);
-router.get("/:id", idValidationMiddleware,userController.getUser);
 router.post("/", userValidationMiddleware, userController.createUser);
 router.put("/:id", idValidationMiddleware, userController.updateUser);
 router.delete("/:id", idValidationMiddleware, userController.deleteUser);

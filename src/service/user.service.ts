@@ -8,23 +8,34 @@ import { v4 as uuidv4 } from "uuid";
 
 import User from "../model/user.model.ts";
 
+type UserData = {
+  [id: string]: User;
+};
+
 export interface IUserService {
-  getUser(id?: string): Promise<User[]> | Promise<User>; // change this
-  createUser(user: User): Promise<User>;
-  updateUser(user: User): Promise<User>;
-  deleteUser(id: string): Promise<User>;
-  activateUser(id: string): Promise<User>;
+  getUser(id?: string): Promise<UserData>;
+  createUser(user: User): Promise<User | null>;
+  updateUser(user: User): Promise<User | null>;
+  deleteUser(id: string): Promise<UserData | null>;
+  activateUser(id: string): Promise<UserData | null>;
 }
 
 export default class UserService implements IUserService {
   constructor(public dbFile: string) {
-    this.dbFile = path.resolve(fileURLToPath(import.meta.url), dbFile);
+    this.dbFile = path.resolve(
+      fileURLToPath(import.meta.url),
+      "../../..",
+      dbFile
+    );
   }
 
   async getUserData() {
     const jsonData = await readFile(this.dbFile, "utf8");
-    const data = JSON.parse(jsonData);
-    return data;
+    if (jsonData) {
+      const data: UserData = JSON.parse(jsonData);
+      return data;
+    }
+    return {};
   }
 
   async createUser(user: any) {
@@ -36,45 +47,54 @@ export default class UserService implements IUserService {
   async saveUsers(newUser: User) {
     const data = await this.getUserData();
 
-    data.push(newUser);
+    data[newUser.id] = newUser;
 
-    writeFile(this.dbFile, data);
+    await writeFile(this.dbFile, JSON.stringify(data));
   }
 
-  async getUser(userId?: String) {
+  async getUser(id?: string) {
     const data = await this.getUserData();
-    return data.filter(({ id }: User) => userId === id);
+    return id ? { id: data[id] } : data;
   }
 
-  async updateUser({ id, name, age, gender, status }: User) {
+  async updateUser(newData: User) {
     const data = await this.getUserData();
-    const newData = data.map((data: User) =>
-      data.id === id ? data : { ...data, id, name, age, gender, status }
-    );
+    const user = data[newData.id];
+    if (user) {
+      data[newData.id] = {
+        ...user,
+        name: newData.name,
+        age: newData.age,
+        gender: newData.gender,
+        modificationTimestamp: new Date(),
+      };
 
-    writeFile(this.dbFile, newData);
+      writeFile(this.dbFile, JSON.stringify(data));
 
-    return newData;
+      return newData;
+    }
+    return null;
   }
 
-  async deleteUser(id: String) {
+  async deleteUser(id: string) {
     const data = await this.getUserData();
-    const newData = data.filter(({ id: userId }: User) => userId === id);
-
-    writeFile(this.dbFile, newData);
-
-    return newData;
+    const user = data[id];
+    if (user) {
+      delete data[id];
+      await writeFile(this.dbFile, JSON.stringify(data));
+      return data;
+    }
+    return null;
   }
 
-  async activateUser(id: String) {
+  async activateUser(id: string) {
     const data = await this.getUserData();
-    const newData = data.map((data: User) => ({
-      ...data,
-      status: data.id === id ? true : data.status,
-    }));
-
-    writeFile(this.dbFile, newData);
-
-    return newData;
+    const user = data[id];
+    if (user) {
+      data[id].status = true;
+      await writeFile(this.dbFile, JSON.stringify(data));
+      return data;
+    }
+    return null;
   }
 }
