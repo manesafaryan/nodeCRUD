@@ -1,17 +1,19 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { NextFunction, Request, Response } from "express";
 
-import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
-import userRoutes from "./router/user.router.ts";
+import { router as userRoutes } from "./router/user.router.ts";
 
-import apiKeyMiddleware from "./middlewares/apiKey.middleware.ts";
+import { validateAPIKey } from "./middlewares/apiKey.middleware.ts";
+
+dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 app.use(express.json());
 
-app.use(apiKeyMiddleware);
+app.use(validateAPIKey);
 
 app.use("/users", userRoutes);
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export default (req: Request, res: Response, next: NextFunction) => {
+export function validateID(req: Request, res: Response, next: NextFunction) {
   const id = req.params.id;
 
   if (!id) {
@@ -8,4 +8,4 @@ export default (req: Request, res: Response, next: NextFunction) => {
   }
 
   next();
-};
+}

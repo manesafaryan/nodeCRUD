@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+
 import { IUserService } from "../service/user.service.ts";
 
 export class UserController {
@@ -13,7 +14,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 
@@ -30,7 +30,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 
@@ -41,7 +40,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 
@@ -59,7 +57,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 
@@ -76,7 +73,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 
@@ -93,7 +89,6 @@ export class UserController {
     } catch (error) {
       next(error);
       console.log(error);
-      res.status(500).send("internal sever error");
     }
   };
 }

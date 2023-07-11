@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export default (req: Request, res: Response, next: NextFunction) => {
+export function validateUser(req: Request, res: Response, next: NextFunction) {
   const { name, age, gender } = req.body;
 
   if (!name || !age || !gender) {
@@ -8,4 +8,4 @@ export default (req: Request, res: Response, next: NextFunction) => {
   }
 
   next();
-};
+}
