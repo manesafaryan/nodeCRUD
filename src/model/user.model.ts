@@ -1,3 +1,9 @@
+import Joi from "joi";
+
+const nameSchema = Joi.string().min(2).required();
+const ageSchema = Joi.number().integer().min(18).max(100).required();
+const genderSchema = Joi.string().valid("male", "female", "other").required();
+
 export class User {
   //region Properties
   private modificationTimestamp: null | Date = null;
@@ -16,7 +22,11 @@ export class User {
   }
 
   setName(name: string) {
-    this.name = name;
+    const { error, value } = nameSchema.validate(name);
+    if (error) {
+      throw new Error("Invalid name: " + error.details[0].message);
+    }
+    this.name = value;
   }
 
   getAge() {
@@ -24,11 +34,19 @@ export class User {
   }
 
   setAge(age: number) {
-    this.age = age;
+    const { error, value } = ageSchema.validate(age);
+    if (error) {
+      throw new Error("Invalid name: " + error.details[0].message);
+    }
+    this.age = value;
   }
 
   setGender(gender: string) {
-    this.gender = gender;
+    const { error, value } = genderSchema.validate(gender);
+    if (error) {
+      throw new Error("Invalid name: " + error.details[0].message);
+    }
+    this.gender = value;
   }
 
   getGender() {

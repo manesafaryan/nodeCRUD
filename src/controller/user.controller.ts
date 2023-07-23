@@ -10,7 +10,11 @@ export class UserController {
 
     try {
       const result = await this.userService.createUser(payload);
-      res.status(201).send(result);
+      if (!result.success) {
+        res.status(422).send(result.error);
+      } else {
+        res.status(201).send(result);
+      }
     } catch (error) {
       next(error);
       console.log(error);
@@ -50,7 +54,11 @@ export class UserController {
     try {
       const result = await this.userService.updateUser({ ...payload, id });
       if (result) {
-        res.status(201).send(result);
+        if (!result.success) {
+          res.status(422).send(result.error);
+        } else {
+          res.status(201).send(result);
+        }
       } else {
         res.status(404).send("No such user");
       }
