@@ -1,9 +1,8 @@
 import express from "express";
 
-import userController from "../controller/index.ts";
+import { userController } from "../controller/index.ts";
 
-import { validateID } from "../middlewares/idValidation.middleware.ts";
-import { validateUser } from "../middlewares/userValidation.middleware.ts";
+import { validateID, validateUser } from "../middlewares/user/index.ts";
 
 export const router = express.Router();
 

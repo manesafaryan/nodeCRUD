@@ -1,31 +1,50 @@
 export class User {
-  modificationTimestamp: null | Date;
-  creationTimestamp: Date;
-  status: boolean;
-  id: string;
-  name: string;
-  age: number;
-  gender: string;
+  //region Properties
+  private modificationTimestamp: null | Date = null;
+  private creationTimestamp: Date | null = null;
+  private status: boolean | null = null;
+  private name: string | null = null;
+  private age: number | null = null;
+  private gender: string | null = null;
+  //endregion
 
-  constructor(id: string, name: string, age: number, gender: string) {
-    this.id = id;
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
-    this.status = false;
-    this.creationTimestamp = new Date();
-    this.modificationTimestamp = null;
+  constructor() {}
+
+  //region Getters, Setters
+  getName() {
+    return this.name;
   }
 
-  // activate() {
-  //   this.status = true;
-  //   this.modificationTimestamp = new Date();
-  // }
+  setName(name: string) {
+    this.name = name;
+  }
 
-  // update(name: string, age: number, gender: string) {
-  //   this.name = name;
-  //   this.age = age;
-  //   this.gender = gender;
-  //   this.modificationTimestamp = new Date();
-  // }
+  getAge() {
+    return this.age;
+  }
+
+  setAge(age: number) {
+    this.age = age;
+  }
+
+  setGender(gender: string) {
+    this.gender = gender;
+  }
+
+  getGender() {
+    return this.gender;
+  }
+
+  setStatus(status: boolean) {
+    this.status = status;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  setModificationTimestamp(modificationTimestamp: Date) {
+    this.modificationTimestamp = modificationTimestamp;
+  }
+  //endregion
 }

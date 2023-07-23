@@ -1,93 +1,50 @@
-import { readFile, writeFile } from "fs/promises";
-
-import { v4 as uuidv4 } from "uuid";
-
+import { UserDataAccess } from "../data/user-data-access.layer.ts";
 import { User } from "../model/user.model.ts";
 
-type UserData = {
-  [id: string]: User;
-};
-
 export interface IUserService {
-  getUser(id?: string): Promise<UserData>;
-  createUser(user: User): Promise<User | null>;
-  updateUser(user: User): Promise<User | null>;
-  deleteUser(id: string): Promise<UserData | null>;
-  activateUser(id: string): Promise<UserData | null>;
+  getUser(id?: string): Promise<User[]>;
+  createUser(user: IUser): Promise<User | null>;
+  updateUser(user: IUser): Promise<User | null>;
+  deleteUser(id: string): Promise<User | null>;
+  activateUser(id: string): Promise<User | null>;
 }
 
-export class UserService implements IUserService {
-  constructor(private dbFile: string) {}
+interface IUser {
+  age: number;
+  name: string;
+  gender: string;
+}
 
-  private async getUserData() {
-    const jsonData = await readFile(this.dbFile, "utf8");
+export class UserService {
+  constructor(private readonly dataAccess: UserDataAccess) {}
 
-    if (jsonData) {
-      const data: UserData = JSON.parse(jsonData);
-      return data;
-    }
-    return {};
+  async createUser({ name, age, gender }: IUser): Promise<User | null> {
+    const user = new User();
+    user.setName(name!);
+    user.setAge(age!);
+    user.setGender(gender!);
+    user.setStatus(false);
+    return this.dataAccess.createUser(user);
   }
 
-  private async writeUserData(data: UserData) {
-    writeFile(this.dbFile, JSON.stringify(data));
+  async getUser(id?: string): Promise<User[]> {
+    return this.dataAccess.getUsers(id);
   }
 
-  async createUser(user: any) {
-    const newUser = new User(uuidv4(), user.name, user.age, user.gender);
-    this.saveUsers(newUser);
-    return newUser;
+  async updateUser({ name, age, gender }: IUser): Promise<User | null> {
+    const user = new User();
+    user.setName(name!);
+    user.setAge(age!);
+    user.setGender(gender!);
+    user.setModificationTimestamp(new Date());
+    return this.dataAccess.updateUser(user);
   }
 
-  async saveUsers(newUser: User) {
-    const data = await this.getUserData();
-
-    data[newUser.id] = newUser;
-    await this.writeUserData(data);
+  async deleteUser(id: string): Promise<User | null> {
+    return this.dataAccess.deleteUser(id);
   }
 
-  async getUser(id?: string) {
-    const data = await this.getUserData();
-    return id ? { id: data[id] } : data;
-  }
-
-  async updateUser(newData: User) {
-    const data = await this.getUserData();
-    const user = data[newData.id];
-
-    if (user) {
-      user.name = newData.name;
-      user.age = newData.age;
-      user.gender = newData.gender;
-      user.modificationTimestamp = new Date();
-
-      this.writeUserData(data);
-      return newData;
-    }
-    return null;
-  }
-
-  async deleteUser(id: string) {
-    const data = await this.getUserData();
-    const user = data[id];
-
-    if (user) {
-      delete data[id];
-      await this.writeUserData(data);
-      return data;
-    }
-    return null;
-  }
-
-  async activateUser(id: string) {
-    const data = await this.getUserData();
-    const user = data[id];
-
-    if (user) {
-      data[id].status = true;
-      await this.writeUserData(data);
-      return data;
-    }
-    return null;
+  async activateUser(id: string): Promise<User | null> {
+    return this.dataAccess.activateUser(id);
   }
 }

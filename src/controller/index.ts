@@ -1,15 +1,18 @@
 import { config } from "dotenv";
 
-import path from "path";
+import pkg from "pg";
 
 import { UserController } from "./user.controller.ts";
 
 import { UserService } from "../../src/service/user.service.ts";
+import { UserDataAccessLayer } from "../data/user-data-access.layer.ts";
+import { dbConfig } from "../config/db.config.ts";
 
 config();
 
-const userController = new UserController(
-  new UserService(path.resolve(process.env.DB_FILE_PATH ?? ""))
-);
+const { Pool } = pkg;
+const dbPool = new Pool(dbConfig);
 
-export default userController;
+export const userController = new UserController(
+  new UserService(new UserDataAccessLayer(dbPool))
+);
